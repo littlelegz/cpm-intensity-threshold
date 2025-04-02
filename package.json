@@ -1,0 +1,27 @@
+{
+  "name": "visualization",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "homepage": "https://littlelegz.github.io",
+  "scripts": {
+    "build": "rsbuild build",
+    "dev": "rsbuild dev --open",
+    "preview": "rsbuild preview",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@mui/material": "^7.0.1",
+    "d3": "^7.9.0",
+    "gh-pages": "^6.3.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@rsbuild/core": "^1.2.16",
+    "@rsbuild/plugin-react": "^1.1.1"
+  }
+}
