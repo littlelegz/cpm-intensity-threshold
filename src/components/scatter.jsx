@@ -10,8 +10,7 @@ const ScatterPlot = ({ data }) => {
   const width = 800;
   const height = 600;
   const margin = { top: 120, right: 120, bottom: 40, left: 40 };
-  const { crosshairValues, setCrosshairValues, hoverValues, setHoverValues, zoomBounds, setZoomBounds } = useContext(graphContext);
-  const [selectionMode, setSelectionMode] = useState(false);
+  const { crosshairValues, setCrosshairValues, setHoverValues, zoomBounds, setZoomBounds, clearState } = useContext(graphContext);
 
   const [varData, setVarData] = useState(data);
 
@@ -54,6 +53,13 @@ const ScatterPlot = ({ data }) => {
 
     setZoomBounds({ cpm: cpmRange, intensity: intensityRange });
   }
+
+  useEffect(() => {
+    if (!data) return;
+    setVarData(data);
+    // Clear previous state when new data is loaded
+    clearState();
+  }, [data]);
 
   useEffect(() => {
     if (!varData) return;

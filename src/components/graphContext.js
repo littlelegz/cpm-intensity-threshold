@@ -7,10 +7,17 @@ export const GraphProvider = ({ children }) => {
   const [hoverValues, setHoverValues] = useState(null);
   const [zoomBounds, setZoomBounds] = useState(null);
 
+  const clearState = () => {
+    setCrosshairValues(null);
+    setHoverValues(null);
+    setZoomBounds(null);
+  }
+
   return (
     <graphContext.Provider value={{
       crosshairValues, setCrosshairValues, hoverValues, setHoverValues
-      , zoomBounds, setZoomBounds
+      , zoomBounds, setZoomBounds,
+       clearState
     }}>
       {children}
     </graphContext.Provider>
