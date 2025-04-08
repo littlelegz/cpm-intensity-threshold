@@ -3,6 +3,16 @@ import { Button, Typography } from '@mui/material';
 import * as d3 from 'd3';
 import { graphContext } from './graphContext';
 
+const stateColors = [
+  '#377eb8', // blue
+  '#e41a1c', // red
+  '#4daf4a', // green
+  '#984ea3', // purple
+  '#ff7f00', // orange
+  '#a65628', // brown
+  '#f781bf'  // pink
+];
+
 const ScatterPlot = ({ data }) => {
   const svgRef = useRef();
   const zoomCPMRef = useRef();
@@ -75,11 +85,11 @@ const ScatterPlot = ({ data }) => {
 
     // Create scales
     const xScale = d3.scaleLinear()
-      .domain(zoomBounds ? zoomBounds.cpm : [d3.min(varData, d => d.cpm), d3.max(varData, d => d.cpm)])
+      .domain(zoomBounds ? zoomBounds.cpm : [0, d3.max(varData, d => d.cpm)])
       .range([margin.left, width - margin.right]);
 
     const yScale = d3.scaleLinear()
-      .domain(zoomBounds ? zoomBounds.intensity : [d3.min(varData, d => d.intensity), d3.max(varData, d => d.intensity)])
+      .domain(zoomBounds ? zoomBounds.intensity : [0, d3.max(varData, d => d.intensity)])
       .range([height - margin.bottom, margin.top]);
 
     // Filter points based on zoom bounds
@@ -108,7 +118,7 @@ const ScatterPlot = ({ data }) => {
       .domain(yScale.domain())
       .thresholds(yScale.ticks(30));
 
-    // Compute the binned varData
+    // Compute the bins for x and y
     const xBins = xDensity(visiblePoints);
     const yBins = yDensity(visiblePoints);
 
@@ -176,6 +186,7 @@ const ScatterPlot = ({ data }) => {
 
     // Add axes
     svg.append('g')
+      .attr('class', 'x-axis')
       .attr('transform', `translate(0,${height - margin.bottom})`)
       .call(d3.axisBottom(xScale))
       .append('text')
@@ -185,6 +196,7 @@ const ScatterPlot = ({ data }) => {
       .text('CPM');
 
     svg.append('g')
+      .attr('class', 'y-axis')
       .attr('transform', `translate(${margin.left},0)`)
       .call(d3.axisLeft(yScale))
       .append('text')
@@ -230,7 +242,7 @@ const ScatterPlot = ({ data }) => {
       .attr('dx', '-0.5em')
       .attr('x', margin.left - 5);
 
-    // Add mouse tracking area (moved before points)
+    // Add mouse tracking area 
     svg.append('rect')
       .attr('width', width - margin.left - margin.right)
       .attr('height', height - margin.top - margin.bottom)
@@ -252,14 +264,18 @@ const ScatterPlot = ({ data }) => {
       })
       .on('click', (event => handleClick(event, { xScale, yScale }, updateCrosshair)));
 
-    // Add points (now on top layer)
+    // Add points
     svg.selectAll('circle')
       .data(visiblePoints)
       .join('circle')
       .attr('cx', d => xScale(d.cpm))
       .attr('cy', d => yScale(d.intensity))
       .attr('r', 3)
-      .attr('fill', d => d.state === 1 ? '#ff6b6b' : '#4ecdc4')
+      .attr('fill', d => {if (d.state) {
+        return stateColors[d.state % stateColors.length]}
+      else {
+        return '#377eb8'
+      }})
       .attr('opacity', 0.6)
       .on('mouseover', function (event, d) {
         const circle = d3.select(this);
