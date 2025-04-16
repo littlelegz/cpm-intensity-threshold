@@ -6,4 +6,8 @@ export default defineConfig({
   output: {
     assetPrefix: '/cpm-intensity-threshold',
   },
+  html: {
+    template: './public/index.html',
+    title: 'ThresholdCalc'
+  },
 });
